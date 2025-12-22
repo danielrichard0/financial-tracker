@@ -14,12 +14,11 @@ import { Toaster } from 'react-hot-toast';
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <div><Toaster /></div>
+      <Toaster position='top-right' />
       <Navbar />
       <Container fluid='md' className='mt-3'>
 
         <Routes>
-
           <Route path="/" element={<App />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/register" element={<RegisterForm />} />
