@@ -14,13 +14,14 @@ datasource db {
 }
 
 model User {
-  id          Int       @id @default(autoincrement())
-  email       String    @unique
-  password    String
-  firstName   String
-  lastName    String?
-  phoneNumber String    @unique @db.VarChar(20)
-  session     Session[]
+  username       String         @id
+  email          String         @unique
+  password       String
+  firstName      String
+  lastName       String?
+  phoneNumber    String         @unique @db.VarChar(20)
+  userCategories UserCategory[]
+  transactions   Transaction[]
 }
 
 model Session {
@@ -28,6 +29,41 @@ model Session {
   sid       String   @unique
   data      String
   expiresAt DateTime
-  user      User?    @relation(fields: [userId], references: [id])
-  userId    Int?
+}
+
+model Transaction {
+  id           Int             @id @default(autoincrement())
+  amount       Decimal         @db.Decimal(13, 4)
+  description  String?
+  date         DateTime
+  dateCreated  DateTime        @default(now())
+  trxType      TransactionType @relation(fields: [trxTypeId], references: [id])
+  currency     MasterCurrency? @relation(fields: [currencyCode], references: [currency_code])
+  userCategory UserCategory?   @relation(fields: [categoryId], references: [id])
+  user         User            @relation(fields: [username], references: [username])
+  trxTypeId    Int
+  currencyCode String          @db.Char(3)
+  categoryId   Int
+  username     String
+}
+
+model UserCategory {
+  user         User          @relation(fields: [username], references: [username])
+  username     String
+  id           Int           @id @default(autoincrement())
+  name         String
+  dateCreated  DateTime      @default(now())
+  transactions Transaction[]
+}
+
+model TransactionType {
+  id           Int           @id @default(autoincrement())
+  name         String
+  transactions Transaction[]
+}
+
+model MasterCurrency {
+  currency_code String        @id @db.Char(3)
+  country       String
+  transactions  Transaction[]
 }

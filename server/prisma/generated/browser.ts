@@ -27,3 +27,23 @@ export type User = Prisma.UserModel
  * 
  */
 export type Session = Prisma.SessionModel
+/**
+ * Model Transaction
+ * 
+ */
+export type Transaction = Prisma.TransactionModel
+/**
+ * Model UserCategory
+ * 
+ */
+export type UserCategory = Prisma.UserCategoryModel
+/**
+ * Model TransactionType
+ * 
+ */
+export type TransactionType = Prisma.TransactionTypeModel
+/**
+ * Model MasterCurrency
+ * 
+ */
+export type MasterCurrency = Prisma.MasterCurrencyModel

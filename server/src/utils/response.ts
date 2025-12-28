@@ -1,4 +1,4 @@
-export default function response(status: string, message: string, result: any) {
+export default function response(status: string, message?: string, result?: any): {} {
     return {
         status: status,
         message: message,

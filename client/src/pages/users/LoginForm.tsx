@@ -1,6 +1,5 @@
 import { Form, Row, Col, Button } from 'react-bootstrap'
 import { useState, useEffect } from 'react'
-import { Navigate, redirect } from 'react-router';
 import { useNavigate } from 'react-router';
 import './loginform.css'
 import toast from 'react-hot-toast';
@@ -38,8 +37,10 @@ function LoginForm() {
             } else {
                 toast.error(`Error login : ${response.message}`)
             }
-
-
+        }).catch((err) => {
+            console.log(err)
+        }).finally(() => {
+            console.log('cleanup')
         })
     }
 

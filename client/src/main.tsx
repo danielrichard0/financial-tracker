@@ -9,6 +9,7 @@ import LoginForm from './pages/users/LoginForm.tsx';
 import RegisterForm from './pages/users/RegisterForm.tsx';
 import Navbar from './components/Navbar.tsx'
 import { Toaster } from 'react-hot-toast';
+import Authenticator from './utils/auth.tsx';
 
 
 createRoot(document.getElementById('root')!).render(
@@ -21,8 +22,12 @@ createRoot(document.getElementById('root')!).render(
         <Routes>
           <Route path="/" element={<App />} />
           <Route path="/login" element={<LoginForm />} />
-          <Route path="/register" element={<RegisterForm />} />
-
+          <Route element={<Authenticator isRegister={false} />}>
+            <Route path="/login" element={<LoginForm />} />
+          </Route>
+          <Route element={<Authenticator isRegister={true} />}>
+            <Route path="/register" element={<RegisterForm />} />
+          </Route>
         </Routes>
       </Container>
     </BrowserRouter>

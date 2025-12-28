@@ -20,7 +20,7 @@ const config: runtime.GetPrismaClientConfig = {
   "clientVersion": "7.1.0",
   "engineVersion": "ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba",
   "activeProvider": "postgresql",
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"./generated\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel User {\n  id          Int     @id @default(autoincrement())\n  email       String  @unique\n  password    String\n  firstName   String\n  lastName    String?\n  phoneNumber String  @unique @db.VarChar(20)\n}\n\nmodel Session {\n  id        String   @id\n  sid       String   @unique\n  data      String\n  expiresAt DateTime\n}\n",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"./generated\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel User {\n  username       String         @id\n  email          String         @unique\n  password       String\n  firstName      String\n  lastName       String?\n  phoneNumber    String         @unique @db.VarChar(20)\n  userCategories UserCategory[]\n  transactions   Transaction[]\n}\n\nmodel Session {\n  id        String   @id\n  sid       String   @unique\n  data      String\n  expiresAt DateTime\n}\n\nmodel Transaction {\n  id           Int             @id @default(autoincrement())\n  amount       Decimal         @db.Decimal(13, 4)\n  description  String?\n  date         DateTime\n  dateCreated  DateTime        @default(now())\n  trxType      TransactionType @relation(fields: [trxTypeId], references: [id])\n  currency     MasterCurrency? @relation(fields: [currencyCode], references: [currency_code])\n  userCategory UserCategory?   @relation(fields: [categoryId], references: [id])\n  user         User            @relation(fields: [username], references: [username])\n  trxTypeId    Int\n  currencyCode String          @db.Char(3)\n  categoryId   Int\n  username     String\n}\n\nmodel UserCategory {\n  user         User          @relation(fields: [username], references: [username])\n  username     String\n  id           Int           @id @default(autoincrement())\n  name         String\n  dateCreated  DateTime      @default(now())\n  transactions Transaction[]\n}\n\nmodel TransactionType {\n  id           Int           @id @default(autoincrement())\n  name         String\n  transactions Transaction[]\n}\n\nmodel MasterCurrency {\n  currency_code String        @id @db.Char(3)\n  country       String\n  transactions  Transaction[]\n}\n",
   "runtimeDataModel": {
     "models": {},
     "enums": {},
@@ -28,7 +28,7 @@ const config: runtime.GetPrismaClientConfig = {
   }
 }
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"firstName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"lastName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phoneNumber\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"Session\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sid\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"data\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"firstName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"lastName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phoneNumber\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userCategories\",\"kind\":\"object\",\"type\":\"UserCategory\",\"relationName\":\"UserToUserCategory\"},{\"name\":\"transactions\",\"kind\":\"object\",\"type\":\"Transaction\",\"relationName\":\"TransactionToUser\"}],\"dbName\":null},\"Session\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sid\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"data\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Transaction\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"amount\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"dateCreated\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"trxType\",\"kind\":\"object\",\"type\":\"TransactionType\",\"relationName\":\"TransactionToTransactionType\"},{\"name\":\"currency\",\"kind\":\"object\",\"type\":\"MasterCurrency\",\"relationName\":\"MasterCurrencyToTransaction\"},{\"name\":\"userCategory\",\"kind\":\"object\",\"type\":\"UserCategory\",\"relationName\":\"TransactionToUserCategory\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"TransactionToUser\"},{\"name\":\"trxTypeId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"currencyCode\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"categoryId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"UserCategory\":{\"fields\":[{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"UserToUserCategory\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"dateCreated\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"transactions\",\"kind\":\"object\",\"type\":\"Transaction\",\"relationName\":\"TransactionToUserCategory\"}],\"dbName\":null},\"TransactionType\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"transactions\",\"kind\":\"object\",\"type\":\"Transaction\",\"relationName\":\"TransactionToTransactionType\"}],\"dbName\":null},\"MasterCurrency\":{\"fields\":[{\"name\":\"currency_code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"country\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"transactions\",\"kind\":\"object\",\"type\":\"Transaction\",\"relationName\":\"MasterCurrencyToTransaction\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 
 async function decodeBase64AsWasm(wasmBase64: string): Promise<WebAssembly.Module> {
   const { Buffer } = await import('node:buffer')
@@ -193,6 +193,46 @@ export interface PrismaClient<
     * ```
     */
   get session(): Prisma.SessionDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.transaction`: Exposes CRUD operations for the **Transaction** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Transactions
+    * const transactions = await prisma.transaction.findMany()
+    * ```
+    */
+  get transaction(): Prisma.TransactionDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.userCategory`: Exposes CRUD operations for the **UserCategory** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more UserCategories
+    * const userCategories = await prisma.userCategory.findMany()
+    * ```
+    */
+  get userCategory(): Prisma.UserCategoryDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.transactionType`: Exposes CRUD operations for the **TransactionType** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TransactionTypes
+    * const transactionTypes = await prisma.transactionType.findMany()
+    * ```
+    */
+  get transactionType(): Prisma.TransactionTypeDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.masterCurrency`: Exposes CRUD operations for the **MasterCurrency** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more MasterCurrencies
+    * const masterCurrencies = await prisma.masterCurrency.findMany()
+    * ```
+    */
+  get masterCurrency(): Prisma.MasterCurrencyDelegate<ExtArgs, { omit: OmitOpts }>;
 }
 
 export function getPrismaClientClass(): PrismaClientConstructor {

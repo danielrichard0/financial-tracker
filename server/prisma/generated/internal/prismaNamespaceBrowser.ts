@@ -52,7 +52,11 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
-  Session: 'Session'
+  Session: 'Session',
+  Transaction: 'Transaction',
+  UserCategory: 'UserCategory',
+  TransactionType: 'TransactionType',
+  MasterCurrency: 'MasterCurrency'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -72,7 +76,7 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 
 
 export const UserScalarFieldEnum = {
-  id: 'id',
+  username: 'username',
   email: 'email',
   password: 'password',
   firstName: 'firstName',
@@ -91,6 +95,47 @@ export const SessionScalarFieldEnum = {
 } as const
 
 export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
+
+
+export const TransactionScalarFieldEnum = {
+  id: 'id',
+  amount: 'amount',
+  description: 'description',
+  date: 'date',
+  dateCreated: 'dateCreated',
+  trxTypeId: 'trxTypeId',
+  currencyCode: 'currencyCode',
+  categoryId: 'categoryId',
+  username: 'username'
+} as const
+
+export type TransactionScalarFieldEnum = (typeof TransactionScalarFieldEnum)[keyof typeof TransactionScalarFieldEnum]
+
+
+export const UserCategoryScalarFieldEnum = {
+  username: 'username',
+  id: 'id',
+  name: 'name',
+  dateCreated: 'dateCreated'
+} as const
+
+export type UserCategoryScalarFieldEnum = (typeof UserCategoryScalarFieldEnum)[keyof typeof UserCategoryScalarFieldEnum]
+
+
+export const TransactionTypeScalarFieldEnum = {
+  id: 'id',
+  name: 'name'
+} as const
+
+export type TransactionTypeScalarFieldEnum = (typeof TransactionTypeScalarFieldEnum)[keyof typeof TransactionTypeScalarFieldEnum]
+
+
+export const MasterCurrencyScalarFieldEnum = {
+  currency_code: 'currency_code',
+  country: 'country'
+} as const
+
+export type MasterCurrencyScalarFieldEnum = (typeof MasterCurrencyScalarFieldEnum)[keyof typeof MasterCurrencyScalarFieldEnum]
 
 
 export const SortOrder = {

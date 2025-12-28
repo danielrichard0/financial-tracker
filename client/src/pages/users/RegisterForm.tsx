@@ -2,11 +2,11 @@ import { Form, Row, Col, Button } from 'react-bootstrap'
 import './registerform.css'
 import { useState, useEffect } from 'react'
 import toast from 'react-hot-toast';
-
-const notify = () => toast('Here is your toast.');
+import statusMessage from '../../utils/statusMessage';
 
 function RegisterForm() {
     type FormState = {
+        username: string | null;
         email: string | null;
         password: string | null;
         firstName: string | null;
@@ -14,6 +14,7 @@ function RegisterForm() {
         phoneNumber: string | null;
     };
     const [form, setForm] = useState<FormState>({
+        username: null,
         email: null,
         password: null,
         firstName: null,
@@ -22,40 +23,32 @@ function RegisterForm() {
     });
 
     useEffect(() => {
-        console.log("Form updated, : ", form)
-    }, [form])
 
-    useEffect(() => {
-        notify()
     }, [])
 
     async function handleRegister(e: any) {
         console.log("handle")
         e.preventDefault()
-        toast.promise(
-            fetch("/api/register", {
-                method: "POST",
-                headers: { "content-type": "application/json" },
-                body: JSON.stringify({
-                    email: form.email,
-                    password: form.password,
-                    firstName: form.firstName,
-                    lastName: form.lastName,
-                    phoneNumber: form.phoneNumber
-                })
-            }).then((res) => {
-                console.log(res.json())
-            }),
-            {
-                loading: "Loading...",
-                success: "Got the data",
-                error: "Error when fetching"
-            }
-        );
-
-
-        //const data = await res.json()
-        // console.log("info data : ", data)
+        toast.loading('Sedang mendaftarkan akun . . .')
+        await fetch("/api/register", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({
+                username: form.username,
+                email: form.email,
+                password: form.password,
+                firstName: form.firstName,
+                lastName: form.lastName,
+                phoneNumber: form.phoneNumber
+            })
+        }).then(async (data) => {
+            toast.removeAll()
+            const message = statusMessage(data.status)
+            !data.ok ? toast.error(message) : toast.success('akun didaftarkan')
+        }, () => {
+            toast.removeAll()
+            toast.error('gagal mendaftarkan akun')
+        })
     }
 
     return (
@@ -79,6 +72,12 @@ function RegisterForm() {
                 </Form.Group>
             </Row>
             <Row>
+                <Col>
+                    <Form.Group>
+                        <Form.Label htmlFor='input-username'>Username</Form.Label>
+                        <Form.Control onChange={e => { setForm({ ...form, username: e.target.value }) }} id="input-username" type="text" placeholder="Your username" />
+                    </Form.Group>
+                </Col>
                 <Col>
                     <Form.Group>
                         <Form.Label htmlFor='input-email'>Email</Form.Label>
